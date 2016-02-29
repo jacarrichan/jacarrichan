@@ -108,3 +108,17 @@ hexo backup --init #初始化备份
 hexo backup #备份操作 
 ```
 
+### hexo 组件版本
+
+```
+C:\Users\Jacarri\blog>hexo version
+hexo: 2.8.3
+os: Windows_NT 6.3.9600 win32 ia32
+http_parser: 2.3
+node: 0.12.2
+v8: 3.28.73
+uv: 1.4.2-node1
+zlib: 1.2.8
+modules: 14
+openssl: 1.0.1m
+```
