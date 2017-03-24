@@ -1,7 +1,7 @@
 title: 在Dubbo Provider运行时生成pojo的class
 date: 2016-02-26 16:19:08
 category:
-tags:
+tags:  [Dubbo,hessian]
 ---
 
 问题简述

@@ -1,7 +1,7 @@
 title: 当当网的技术堆栈
 date: 2014-08-24 19:02:45
 category: Exception
-tags: [springMVC,apache Tomcat,dangdang.com]
+tags: [springMVC,tomcat,dangdang.com]
 ---
 
 今日偶然间发现了当当网的一个[异常信息](http://e.dangdang.com/ebook/fastpay.do?productId=12324#)，推测出采用了springMVC、springSecurity和Apache  tomcat， 根据当当网的主页看，视乎门户采用的是ASP.NET的技术.
