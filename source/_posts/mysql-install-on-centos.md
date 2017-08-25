@@ -7,6 +7,8 @@ tags: [mysql, centos]
 
 Linux系统上安装MySQL 5.5prm
 
+<!--more-->
+
 ### 1.准备工作
 ``` download
 从MySQL官网上分别下载mysql服务器端于客户端包:

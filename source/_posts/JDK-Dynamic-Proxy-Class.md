@@ -5,7 +5,7 @@ tags: [动态代理,InvocationHandler ]
 
 
 在mybatis编写面向接口的mapper时，只用写接口，不用写实现类就可以。但是接口不能new不能创建实例，那在运行时肯定类实现了mapper这个接口。而创建mapper接口的就是使用的是动态代理。
-
+<!--more-->
 下面贴一个JDK动态代理的例子，因为等下我们需要它运行时的结果。
 # 动态代理 Demo
 

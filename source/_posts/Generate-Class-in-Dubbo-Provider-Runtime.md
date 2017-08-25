@@ -4,11 +4,14 @@ category:
 tags:  [Dubbo,hessian]
 ---
 
-问题简述
->  没有在provider中引入consumer会传过来的子类，导致provider找不到子类后会反序列化为父类实例，同时子类里面扩展的属性都会丢失，导致mybatis里面的动态sql不能访问子类属性。
+ 问题简述：
 
-具体场景
->  consumer-A,调用consumer-B，consumer-B调用provider-B，其中consumer-B即充当consumer角色、也充当provider角色，consumer-A和consumer-B都引用了consumer-B-api，调用时传递的也是consumer-B-api里面的类，所以当consumer-B调用provider-B时需要将consumer-B-api里面类的实例手动转换为provider-B-api里面类的实例，嫌麻烦，所以就没转。consumer-B直接透传了consumer-A发来的参数给provider-B。
+  没有在provider中引入consumer会传过来的子类，导致provider找不到子类后会反序列化为父类实例，同时子类里面扩展的属性都会丢失，导致mybatis里面的动态sql不能访问子类属性。
+
+  <!-- more -->
+具体场景：
+
+  consumer-A,调用consumer-B，consumer-B调用provider-B，其中consumer-B即充当consumer角色、也充当provider角色，consumer-A和consumer-B都引用了consumer-B-api，调用时传递的也是consumer-B-api里面的类，所以当consumer-B调用provider-B时需要将consumer-B-api里面类的实例手动转换为provider-B-api里面类的实例，嫌麻烦，所以就没转。consumer-B直接透传了consumer-A发来的参数给provider-B。
 
 
 如果在provider-B中能自己生成consumer-B-api里面的类并且供mybatis访问，代码就变得简单了。

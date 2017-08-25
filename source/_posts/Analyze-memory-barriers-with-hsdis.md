@@ -2,6 +2,12 @@ title: 使用hsdis分析Java内存屏障
 date: 2017-01-12 15:48:46
 tags: [volatile,hsdis,JIT]
 ---
+
+
+内存屏障（Memory Barrier，或有时叫做内存栅栏，Memory Fence）是一种CPU指令，用于控制特定条件下的重排序和内存可见性问题。Java编译器也会根据内存屏障的规则禁止重排序。
+
+<!-- more -->
+
 # 工具准备
 1. 从 [FCML](https://sourceforge.net/projects/fcml/files/fcml-1.1.2/ 'fcml')下载适合自己操作系统和CPU的HSDIS文件,我的是hsdis-1.1.1-win32-amd64.zip
 

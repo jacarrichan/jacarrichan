@@ -5,8 +5,9 @@ tags: [springMVC,spring]
 ---
 
 
-> 探究springMVC中引用ContextLoaderListener中配置的context:property-placeholder，在初始化springMVC的时候会提示“ Could not resolve placeholder 'jdbc_url' in string value "${jdbc_url}"”的原因
+ 主要是想探究springMVC中引用ContextLoaderListener中配置的context:property-placeholder，在初始化springMVC的时候会提示“ Could not resolve placeholder 'jdbc_url' in string value "${jdbc_url}"”的原因
 
+<!--more-->
 
 根据servlet的规范可知初始化顺序：context-param -> listener -> filter -> servlet
 

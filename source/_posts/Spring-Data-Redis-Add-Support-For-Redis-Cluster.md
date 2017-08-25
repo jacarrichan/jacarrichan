@@ -8,6 +8,8 @@ tags: [Spring,Redis,Proxy]
 
 最近把使用了spring service cache的项目从单点redis迁移到集群环境的redis时，出现了下面的异常
 
+<!--more-->
+
 ```
 Caused by: redis.clients.jedis.exceptions.JedisMovedDataException: MOVED 3688 192.168.164.45:7000
 	at redis.clients.jedis.Protocol.processError(Protocol.java:108)
