@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JacarriChan's coding blog"><title>JVM和垃圾回收的简单总结介绍 | JacarriChan's coding blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JVM和垃圾回收的简单总结介绍</h1><a id="logo" href="/.">JacarriChan's coding blog</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">JVM和垃圾回收的简单总结介绍</h1><div class="post-meta">Jan 12, 2017</div><div class="post-content"><p>本文主要是介绍内部结构</p>
+<a id="more"></a>
+<h2 id="JVM的组成"><a href="#JVM的组成" class="headerlink" title="JVM的组成"></a>JVM的组成</h2><h3 id="线程私有内存区"><a href="#线程私有内存区" class="headerlink" title="线程私有内存区"></a>线程私有内存区</h3><ol>
+<li><strong>程序计数器</strong>：看做当前线程所执行的<strong>字节码行号指示器</strong>。是线程<strong>私有</strong>的内存，且唯一一块不报OutOfMemoryError异常。</li>
+<li><strong>JVM虚拟机栈</strong>：用于描述java方法的<strong>内存模型</strong>：每个方法被执行时都会同时创建一个<strong>栈帧</strong>用于存储<strong>局部变量表，操作数栈，动态链接，方法出口</strong>等信息。每一个方法被调用直至执行完成的过程就对应着一个栈帧在虚拟机中从入栈到出栈的过程。如果线程请求的<strong>栈深度</strong>大于虚拟机所允许的深度就报StackOverflowError, 虚拟机栈可以动态<strong>扩展</strong>，当拓展时无法申请到足够的内存会抛出OutOfMemoryError. 是线程<strong>私有</strong>的。</li>
+<li><strong>本地方法栈</strong>：与虚拟机栈相似，不同的在于它是为虚拟机使用到的<strong>Native</strong>方法服务的。会抛出StackOverflowError和OutOfMemoryError。是线程<strong>私有</strong>的。</li>
+</ol>
+<h3 id="线程共享内存区"><a href="#线程共享内存区" class="headerlink" title="线程共享内存区"></a>线程共享内存区</h3><ol>
+<li><strong>Java堆</strong>:是所有线程共享的一块内存，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。如果堆上没有内存完成实例的分配就会报OutOfMemoryError.</li>
+<li><strong>方法区（永久代）</strong>：用于存储已被虚拟机加载的<strong>类信息、常量、静态变量、即时编译器编译后的代码</strong>等数据。当方法区无法满足内存分配需求时，会抛出OutOfMemoryError。是共享内存。<br>1.<strong>运行时常量池</strong>：用于存放编译器生成的各种字面量和符号引用，是方法区的一部分。无法申请内存时抛出OutOfMemoryError。</li>
+</ol>
+<hr>
+<ol>
+<li><strong>DirectMemory</strong>：不是虚拟机运行时数据的一部分，也不是java虚拟机规范中定义的区域，是计算机直接的内存空间。这部分也被频繁使用，如JAVA NIO的引入基于通道和缓存区的I/O使用native函数直接分配堆外内存。如果内存不足会报OutOfMemoryError。</li>
+</ol>
+<h2 id="JVM的体系结构及各个部分的职责"><a href="#JVM的体系结构及各个部分的职责" class="headerlink" title="JVM的体系结构及各个部分的职责"></a>JVM的体系结构及各个部分的职责</h2><p>JVM都有两种机制，</p>
+<ol>
+<li>一个是装载具有合适名称的类(类或是接口)，包含类的装载 连接 初始化的过程叫做<strong>类装载子系统</strong>；</li>
+<li>另外的一个负责执行包含在已装载的类或接口中的指令，叫做<strong>运行引擎</strong><br>。每个JVM又包括方法区、堆、Java栈、程序计数器和本地方法栈这五个部分，这几个部分和类装载机制与运行引擎机制一起组成JVM的体系结构。</li>
+</ol>
+<p>JVM的每个实例都有一个它自己的方法域和一个堆，运行于JVM内的所有的线程都共享这些区域；当虚拟机装载类文件的时候，它解析其中的二进制数据所包含的类信息，并把它们放到方法域中；当程序运行的时候，JVM把程序初始化的所有对象置于堆上；而每个线程创建的时候，都会拥有自己的程序计数器和Java栈，其中程序计数器中的值指向下一条即将被执行的指令，线程的Java栈则存储为该线程调用Java方法的状态；本地方法调用的状态被存储在本地方法栈，该方法栈依赖于具体的实现。</p>
+<h2 id="GC的两种判定方法"><a href="#GC的两种判定方法" class="headerlink" title="GC的两种判定方法"></a>GC的两种判定方法</h2><blockquote>
+<p>引用计数与根搜索算法。</p>
+</blockquote>
+<ol>
+<li><strong>引用计数</strong>：<br>给对象添加一个引用计数器，每当有一个地方引用该对象时，计数器值加1，当引用失效时，计数器值减1,。任何时候计数器都为0的对象就是不可能再被使用的。它很难解决对象之间相互<strong>循环引用</strong>问题。</li>
+<li><strong>根搜索算法（GC Roots Traceing）:</strong><br>通过一系列名为“GC Roots”的对象作为起点，从这些节点开始向下搜索，搜索走过的路径成为<strong>引用链</strong>，当一个对象到GC Roots没有任何引用链相连时，则证明此对象不可用。<br>GC Roots对象一般是：虚拟机栈中的引用对象，方法区中类静态属性引用的对象，方法区常量引用的对象等。</li>
+</ol>
+<h2 id="Java中的四种引用"><a href="#Java中的四种引用" class="headerlink" title="Java中的四种引用"></a>Java中的四种引用</h2><ol>
+<li><strong>强引用</strong>：程序代码中的普通引用。如Object obj = new Object(),只要强引用存在，垃圾回收器就不会回收。</li>
+<li><strong>软引用</strong>：描述一些有用但并非必须的对象。对于软引用关联的对象在系统将要<strong>发生内存溢出异常之前</strong>，将会把这些对象列进回收范围之中进行第二次回收。<strong>SoftRefence</strong></li>
+<li><strong>弱引用</strong>：描述非必须对象，比软引用弱一些。被弱引用关联的对象只能<strong>生存到下一次垃圾收集发生之前</strong>。无论当前内存是否足够，都会回收掉只被弱引用关联的对象。<strong>WeakRefence</strong></li>
+<li><strong>虚引用</strong>：最弱的引用，不管是否有虚引用存在，完全不会对对象生存时间构成影响，也无法通过虚引用来取得一个对象实例。唯一目的是希望能够在这个对象被垃圾回收器之前收到系统通知。<strong>PhantomReference</strong></li>
+</ol>
+<h2 id="对象创建方、内存分配、访问定位"><a href="#对象创建方、内存分配、访问定位" class="headerlink" title="对象创建方、内存分配、访问定位"></a>对象创建方、内存分配、访问定位</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>Object obj = new Object();</p>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p>obj 保存在java栈中的局部变量表里，作为一个引用数据出现。<br>new Object()会在java堆上分配一块存储Object类型实例的所有数值的结构化内存，根据类型以及虚拟机实现的对象内存布局不同。这块内存是不固定的。</p>
+<h3 id="对象访问方式有两种"><a href="#对象访问方式有两种" class="headerlink" title="对象访问方式有两种"></a>对象访问方式有两种</h3><p><strong>句柄和直接指针</strong>:</p>
+<ol>
+<li><strong>句柄</strong>：在java堆中会划分出一块内存作为句柄池，reference中存储的对象是句柄地址。而句柄中包含对象实例数据和类型数据各自的具体地址信息。最大的好处是如果对象地址发生变化不需要改变reference的值，只需要改变句柄中实例数据指针。</li>
+<li><strong>直接指针访问</strong>：reference直接存储对象的地址，最大的好处是<strong>速度更快</strong>。</li>
+</ol>
+<h2 id="内存溢出和内存泄漏"><a href="#内存溢出和内存泄漏" class="headerlink" title="内存溢出和内存泄漏"></a>内存溢出和内存泄漏</h2><ol>
+<li><strong>内存溢出</strong>：通俗理解就是<strong>内存不够</strong>，程序所需要的内存远远超出了你虚拟机分配的内存大小，就叫内存溢出</li>
+<li><strong>内存泄露</strong>：内存泄漏也称作“存储渗漏”，用动态存储分配函数动态开辟的空间，在<strong>使用完毕后未释放</strong>，结果导致<strong>一直占据该内存单元</strong>。直到程序结束。（其实说白了就是该内存空间使用完毕之后未回收）即所谓内存泄漏</li>
+</ol>
+<h2 id="内存溢出"><a href="#内存溢出" class="headerlink" title="内存溢出"></a>内存溢出</h2><p>通过内存映像工具如jmap、jhat、jconsole等对dump出来的堆转存储快照进行分析，重点是确认内存是出现内存泄露还是内存溢出。</p>
+<p>如果是<strong>内存泄露</strong>进一步使用工具查看泄露的对象到GC Roots的引用链。于是就能找到泄露对象是通过怎样的路径与GC Roots相关联并导致垃圾收集器无法自动回收它们。掌握泄露对象的信息，以及GC Roots引用链的信息，就可以比较准确定位泄露代码的位置。</p>
+<p>如果不存在**内存泄露，那就需要通过jinfo，Jconsole等工具分析java堆参数与机器物理内存对比是否还可以调大，从代码上检查是否存在某些对象生命周期过长，持有状态过长的情况，尝试减少程序的运行消耗。</p>
+<h2 id="Java中内存泄露吗"><a href="#Java中内存泄露吗" class="headerlink" title="Java中内存泄露吗"></a>Java中内存泄露吗</h2><p>有，Java中，造成内存泄露的原因有很多种。典型的例子是<strong>长生命周期的对象持有短生命周期对象的引用就很可能发生内存泄露</strong>，尽管短生命周期对象已经不再需要，但是因为长生命周期对象持有它的引用而导致不能被回收，这就是java中内存泄露的发生场景，通俗地说，就是程序员可能创建了一个对象，以后一直不再使用这个对象，这个对象却一直被引用，即这个对象无用但是却无法被垃圾回收器回收的，这就是java中可能出现内存泄露的情况，例如，缓存系统，我们加载了一个对象放在缓存中(例如放在一个全局map对象中)，然后一直不再使用它，这个对象一直被缓存引用，但却不再被使用。</p>
+<p>检查java中的内存泄露，一定要让程序将各种分支情况都完整执行到程序结束，然后看某个对象是否被使用过，如果没有，则才能判定这个对象属于内存泄露。</p>
+<p><strong>如果一个外部类的实例对象的方法返回了一个内部类的实例对象</strong>，这个内部类对象被长期引用了，即使那个外部类实例对象不再被使用，但由于内部类持久外部类的实例对象，这个外部类对象将不会被垃圾回收，这也会造成内存泄露。</p>
+<h2 id="jvm堆（持久区）内存溢出"><a href="#jvm堆（持久区）内存溢出" class="headerlink" title="jvm堆（持久区）内存溢出"></a>jvm堆（持久区）内存溢出</h2><p>简单的来说 java的堆内存分为两块:permantspace（持久代） 和 heap space。<br>持久带中主要存放用于存放静态类型数据，如 Java Class, Method 等， 与垃圾收集器要收集的Java对象关系不大。<br>而heapspace分为年轻代和年老代<br>年轻代的垃圾回收叫 Young GC， 年老代的垃圾回收叫 Full GC。<br>在年轻代中经历了N次（可配置）垃圾回收后仍然存活的对象，就会被复制到年老代中。因此，可以认为年老代中存放的都是一些生命周期较长的对象<br>年老代溢出原因有循环上万次的字符串处理、创建上千万个对象、在一段代码内申请上百M甚至上G的内存<br>持久代溢出原因动态加载了大量Java类而导致溢出，以及生产大量的常量。<br><strong>永久代内存泄露</strong>:<br>以一个部署到应用程序服务器的Java web程序来说，当该应用程序被卸载的时候，你的EAR/WAR包中的所有类都将变得无用。只要应用程序服务器还活着，JVM将继续运行，但是一大堆的类定义将不再使用，理应将它们从永久代（PermGen）中移除。如果不移除的话，我们在永久代（PermGen）区域就会有内存泄漏。</p>
+<h2 id="堆里面的分区：Eden、survival-、老年代"><a href="#堆里面的分区：Eden、survival-、老年代" class="headerlink" title="堆里面的分区：Eden、survival 、老年代"></a>堆里面的分区：Eden、survival 、老年代</h2><ol>
+<li>新生代：朝生夕死</li>
+<li>老年代一般是放对象和长期存活对象。当一个对象分配的内存空间大于某个阈值时或则年龄增加到一定程度（默认15岁）就进入老年代。</li>
+</ol>
+<h2 id="OOM你遇到过哪些情况"><a href="#OOM你遇到过哪些情况" class="headerlink" title="OOM你遇到过哪些情况"></a>OOM你遇到过哪些情况</h2><ol>
+<li>java.lang.OutOfMemoryError: Java heap space ——&gt;java堆内存溢出，此种情况最常见，一般由于内存泄露或者堆的大小设置不当引起。 </li>
+<li>java.lang.OutOfMemoryError: PermGen space ——&gt;java永久代溢出，即方法区溢出了，<strong>一般出现于大量Class或者jsp页面</strong>，或者采用cglib等反射机制的情况，因为上述情况会产生大量的Class信息存储于方法区。 </li>
+<li>java.lang.StackOverflowError ——&gt; 不会抛OOM error，但也是比较常见的Java内存溢出。JAVA虚拟机栈溢出，一般是由于程序中存在<strong>死循环或者深度递归调用</strong>造成的，栈大小设置太小也会出现此种溢出。可以通过虚拟机参数<strong>-Xss</strong>来设置栈的大小。</li>
+</ol>
+<h2 id="GC的三种收集方法"><a href="#GC的三种收集方法" class="headerlink" title="GC的三种收集方法"></a>GC的三种收集方法</h2><p>标记清除、标记整理、复制算法的原理与特点</p>
+<ol>
+<li><strong>标记清理</strong>：首先标记所有需要回收的对象，在标记完成后<strong>统一回收掉</strong>所有被标记的对象，它的标记的对象。缺点是<strong>效率低</strong>，且存在<strong>内存碎片</strong>。主要用于<em>老生代</em>垃圾回收。</li>
+<li><strong>复制算法</strong>：将内存按容量划分为大小相等的一块，每次只用其中一块。当内存用完了，将还存活的对象复制到另一块内存，然后把已使用过的内存空间一次清理掉。实现简单，高效。一般用于<em>新生代</em>。一般是将内存分为一块较大的Eden空间和两块较小的Survivor空间。HotSpot虚拟机默认比例是8:1,。每次使用Eden和一块Survivor，当回收时将这两块内存中还存活的对象复制到Survivor然后清理掉刚才Eden和Survivor的空间。如果复制过程内存不够使用则向老年代分配担保。</li>
+<li><strong>标记整理</strong>：首先标记所有需要回收的对象，在标记完成后让所有存活的对象都向一端移动，然后直接清理掉端边界意外的内存。用于<em>老年代</em>。</li>
+<li><strong>分代收集算法</strong>：根据对象的生存周期将内存划分为新生代和老年代，根据年代的特点采用最适当的收集算法。</li>
+</ol>
+<h2 id="GC收集器"><a href="#GC收集器" class="headerlink" title="GC收集器"></a>GC收集器</h2><p>CMS收集器与G1收集器的特点。</p>
+<ol>
+<li><strong>Serial</strong>: 单线程收集器，只会使用一个CPU或一条收集器线程去完成，垃圾回收工作，更重要的是在进行垃圾回收时，必须暂停其他所有的工作线程。（Stop the world）。简单高效，用于<em>新生代</em>。</li>
+<li><strong>ParNew</strong>: 是Serial收集器的多线程版本，垃圾回收时采用多线程方式进行回收。默认情况下使用的线程数是cpu数量。除了serial收集器，目前只有它能和CMS收集器配合工作。</li>
+<li><strong>Parallel Scavenge</strong>: 使用复制算法收集器，也是一个并行的多线程收集器。Parallel Scavenge收集器与其他收集器关注点不同，其它收集器主要关注缩短垃圾回收时用户线程的停顿时间。而它关心<strong>吞吐量</strong>，即<strong>运行用户代码时间/(运行用户代码时间+垃圾收集时间)</strong>。停顿时间越短越适合需要与用户交互的程序，高吞吐量则可以最高效率的利用CPU时间。</li>
+<li><strong>Serial Old</strong>: 老年代，单线程收集器，使用<strong>标记整理算法</strong>。主要有两个用途，一是和Parallel Scavenge 收集器配合使用，二是作为CMS的后备方案在并发收集器发生<strong>Concurrent Mode Failure</strong>时候使用。</li>
+<li><strong>Parallel Old</strong>:并行的老年代版本收集器，使用标记整理算法。主要与Parallel Scavenge配合使用。</li>
+<li><strong>CMS</strong>：是以获得最短回收停顿时间为目标的收集器，使用标记清除算法。整个过程包括4个：<br><strong>初始标记</strong>: 标记Gc ROOTS能直接关联到的对象<br><strong>并发标记</strong>：进行Roots Traceing的过程<br><strong>重新标记</strong>：修正并发标记期间因用户继续工作导致标记产生变动<br><strong>并发清除</strong>：<br>初始标记和重新标记需要stop the world. 并发标记和并发清除过程用户线程和收集器线程可以并行执行。</li>
+<li><strong>G1(Garbage First):</strong>基于标记-整理算法的收集器,不会产生空间碎片.它可以精确控制停顿,能够让使用者明确指定一个长度为M毫秒的时间片段内,消耗集上的时间不超过N秒.是不牺牲吞吐量的前提下完成低停顿的.G1将整个java堆(新生和老生)划分为大小相同的区,并跟踪这些区上发生的变化.在后台维护一个优先列表,每次根据允许的收集时间优先回收垃圾最多的区域.</li>
+</ol>
+<h2 id="Minor-GC与Full-GC发生时候"><a href="#Minor-GC与Full-GC发生时候" class="headerlink" title="Minor GC与Full GC发生时候"></a>Minor GC与Full GC发生时候</h2><h3 id="FullGC"><a href="#FullGC" class="headerlink" title="FullGC"></a>FullGC</h3><blockquote>
+<p>一般是发生在老年代的GC，出现一个FullGC经常会伴随至少一次的Minor GC。速度比MinorGC慢10倍以上。</p>
+</blockquote>
+<p>FULL GC发生的情况:</p>
+<ol>
+<li>老年代空间不足<br>老年代空间只有在新生代对象转入及创建为大对象、大数组时才会出现不足的现象，当执行Full GC后空间仍然不足，则抛出如下错误：java.lang.OutOfMemoryError: Java heap space  .<br>措施:为避免以上两种状况引起的FullGC，调优时应尽量做到让对象在Minor GC阶段被回收、让对象在新生代多存活一段时间及不要创建过大的对象及数组</li>
+<li>Permanet Generation(方法区或永久代)空间满<br>PermanetGeneration中存放的为一些class的信息等，当系统中要加载的类、反射的类和调用的方法较多时，Permanet Generation可能会被占满，在未配置为采用CMS GC的情况下会执行Full GC。如果经过Full GC仍然回收不了，那么JVM会抛出如下错误信息：java.lang.OutOfMemoryError: PermGen space<br>措施:为避免Perm Gen占满造成Full GC现象，可采用的方法为增大Perm Gen空间或转为使用CMS GC。</li>
+<li>CMS GC时出现promotion failed和concurrent mode failure<br>对于采用CMS进行老年代GC的程序而言，尤其要注意GC日志中是否有promotion failed和concurrent mode failure两种状况，当这两种状况出现时可能会触发Full GC。<br>promotion failed是在进行Minor GC时，survivor space放不下、对象只能放入老年代，而此时老年代也放不下造成的；concurrent mode failure是在执行CMS GC的过程中同时有对象要放入旧生代，而此时老年代空间不足造成的。<br>应对措施为：增大survivor space、老年代空间或调低触发并发GC的比率，</li>
+<li>统计得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间<br>Hotspot为了避免由于新生代对象晋升到旧生代导致旧生代空间不足的现象，在进行Minor GC时，做了一个判断，如果之前统计所得到的Minor GC晋升到旧生代的平均大小大于旧生代的剩余空间，那么就直接触发Full GC。如果小于并且不允许担保失败也会发生一次Full GC</li>
+</ol>
+<h3 id="MinorGC"><a href="#MinorGC" class="headerlink" title="MinorGC"></a>MinorGC</h3><blockquote>
+<p> MinorGC 指发生在新生代的垃圾收集动作，非常频繁，回收速度也快。</p>
+</blockquote>
+<p>一般发生在新生代空间不足时,另外一个FullGC经常会伴随至少一次的Minor GC. JVM检测晋升到到老年代的平均大小是否小于老年代剩余空间大小,如果小于并且允许担保失败,则执行Minor GC.</p>
+<h2 id="几种常用的内存调试工具："><a href="#几种常用的内存调试工具：" class="headerlink" title="几种常用的内存调试工具："></a>几种常用的内存调试工具：</h2><p>jmap、jstack、jconsole。</p>
+<ol>
+<li><strong>jps</strong>: 列出正在虚拟机运行的虚拟机进程，并显示虚拟机执行主类的名称，以及这些进程的本地虚拟机的唯一ID。</li>
+<li><strong>jstat</strong> : 监视虚拟机各种运行状态信息的命令。可以显示本地或远程虚拟机进程中<strong>类装载,垃圾收集，JIT编译,内存</strong>等数据。</li>
+<li><strong>jinfo</strong>: 实时查看和调整虚拟机的各项参数。</li>
+<li><strong>jmap</strong>: 生成堆转存储快照，查询fianlize执行队列、java堆和永生代详细信息，如空间使用率，当前用的是那种收集器。</li>
+<li><strong>Jhat</strong>: 和jmap搭配使用，来分析jmap生成的堆转存储快照。内置一个微型的HTTP/HTML服务器，生成dump文件的分析结果后，可以通过浏览器查看。</li>
+<li><strong>jstack</strong>:用于生成当前时刻线程快照.线程快照是当前虚拟机内每一条线程正在执行的方法堆栈的集合.生成线程快照的主要目的是为了定位线程长时间停顿的原因.如死锁,死循环,请求外部资源导致的长时间等待.</li>
+<li><strong>JConsole</strong>:可视化监视和管理工具,几乎包括以上工具的所有功能</li>
+<li><strong>VisualVM</strong></li>
+<li><strong>Eclipse Memory Analysis Tools</strong></li>
+<li><strong>Jprofile</strong></li>
+</ol>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><p>答：GC 是垃圾收集的意思，内存处理是编程人员容易出现问题的地方，忘记或者错误的内存回收会导致程序或系统的不稳定甚至崩溃，Java 提供的 GC 功能可以自动监测对象是否超过作用域从而达到自动回收内存的目的，Java 语言没有提供释放已分配内存的显示操作方法。Java 程序员不用担心内存管理，因为垃圾收集器会自动进行管理。要请求垃圾收集，可以调用下面的方法之一：System.gc() 或Runtime.getRuntime().gc() ，但 JVM 可以屏蔽掉显示的垃圾回收调用。</p>
+<p>垃圾回收可以有效的防止内存泄露，有效的使用可以使用的内存。垃圾回收器通常是作为一个单独的低优先级的线程运行，不可预知的情况下对内存堆中已经死亡的或者长时间没有使用的对象进行清除和回收，程序员不能实时的调用垃圾回收器对某个对象或所有对象进行垃圾回收。在 Java 诞生初期，垃圾回收是 Java 最大的亮点之一，因为服务器端的编程需要有效的防止内存泄露问题，然而时过境迁，如今 Java 的垃圾回收机制已经成为被诟病的东西。移动智能终端用户通常觉得 iOS 的系统比 Android 系统有更好的用户体验，其中一个深层次的原因就在于 Android 系统中垃圾回收的不可预知性。</p>
+<h2 id="JVM-加载-class-文件的原理机制"><a href="#JVM-加载-class-文件的原理机制" class="headerlink" title="JVM 加载 class 文件的原理机制"></a>JVM 加载 class 文件的原理机制</h2><p>JVM 中类的装载是由类加载器（ClassLoader） 和它的子类来实现的，Java 中的类加载器是一个重要的 Java 运行时系统组件，它负责在运行时查找和装入类文件中的类。</p>
+<p>由于 Java 的跨平台性，经过编译的 Java 源程序并不是一个可执行程序，而是一个或多个类文件。当 Java 程序需要使用某个类时，JVM 会确保这个类已经被加载、连接(验证、准备和解析)和初始化。</p>
+<ol>
+<li>类的加载是指把类的 .class 文件中的数据读入到内存中，通常是创建一个字节数组读入 .class 文件，然后产生与所加载类对应的 Class 对象。加载完成后，Class 对象还不完整，所以此时的类还不可用。</li>
+<li>当类被加载后就进入连接阶段，这一阶段包括验证、准备(为静态变量分配内存并设置默认的初始值)和解析(将符号引用替换为直接引用)三个步骤。</li>
+<li><p>最后 JVM 对类进行初始化，包括：1. 如果类存在直接的父类并且这个类还没有被初始化，那么就先初始化父类；2. 如果类中存在初始化语句，就依次执行这些初始化语句。</p>
+<p>类的加载是由类加载器完成的，类加载器包括：根加载器（BootStrap）、扩展加载器（Extension）、系统加载器（System）和用户自定义类加载器（java.lang.ClassLoader的子类）。从JDK 1.2开始，类加载过程采取了<strong>父亲委托机制</strong>(PDM)。PDM 更好的保证了 Java 平台的安全性，在该机制中，JVM 自带的 Bootstrap 是根加载器，其他的加载器都有且仅有一个父类加载器。类的加载首先请求父类加载器加载，<em>父类加载器无能为力时才由其子类加载器自行加载</em>。JVM 不会向 Java 程序提供对 Bootstrap 的引用。<br>下面是关于几个类加载器的说明：</p>
+</li>
+<li><p><strong>Bootstrap</strong>：一般用本地代码实现，负责加载JVM基础核心类库（rt.jar）；</p>
+</li>
+<li><strong>Extension</strong>：从 java.ext.dirs 系统属性所指定的目录中加载类库，它的父加载器是 Bootstrap；</li>
+<li><strong>System</strong>：又叫应用类加载器，其父类是Extension。它是应用最广泛的类加载器。它从环境变量 classpath 或者系统属性 java.class.path 所指定的目录中记载类，是用户自定义加载器的默认父加载器。</li>
+</ol>
+<h2 id="类加载的五个过程"><a href="#类加载的五个过程" class="headerlink" title="类加载的五个过程"></a>类加载的五个过程</h2><p>加载、验证、准备、解析、初始化。</p>
+<ol>
+<li><strong>加载</strong>: 根据全限定名来获取定义类的二进制字节流,然后将该字节流所代表的静态结构转化为方法区的运行时数据结构,最后在java堆上生成一个代表该类的Class对象,作为方法区这些数据的访问入口.</li>
+<li><strong>验证</strong>:主要时为了确保class文件的字节流中包含的信息符合当前虚拟机的要求,并且不会危害虚拟机自身的安全.包含四个阶段的验证过程:<br>1)<strong>文件格式验证</strong>:保证输入的字节流能够正确地解析并存储在方法区之内,格式上符合描述一个java类型信息的要求<br>2)<strong>元数据验证</strong>:字节码语义信息的验证,以保证描述的信息符合java语言规范.验证点有:这个类是否有父类等.<br>3)<strong>字节码验证</strong>:主要是进行数据流和控制流分析,保证被校验类的方法在运行时不会做出危害虚拟机安全的行为.<br>4)<strong>符号引用验证</strong>:对符号引用转化为直接引用过程的验证.</li>
+<li><strong>准备</strong>:为类变量分配内存并设置变量的初始值,这些内存在方法区进行分配.</li>
+<li><strong>解析</strong>:将虚拟机常量池中的符号引用转化为直接引用的过程.解析主要是针对类或接口,字段,类方法,类几口方法四类.</li>
+<li><strong>初始化</strong>:执行静态变量的赋值操作以及静态代码块,完成初识化.初始化过程保证了父类中定义的初始化优先于子类的初始化.但接口不需要执行父类的初始化.</li>
+</ol>
+<h2 id="双亲委派模型："><a href="#双亲委派模型：" class="headerlink" title="双亲委派模型："></a>双亲委派模型：</h2><p>除了顶层的启动类加载器外,其余的类加载器都应当有自己的父类加载器.顺序依次是:</p>
+<ol>
+<li>Bootstrap ClassLoader: 启动类加载器,加载java_home/lib中的类</li>
+<li>Extension ClassLoader: 扩展类加载器,加载java_home/lib/ext目录下的类库</li>
+<li>Application ClassLoader: 应用程序类加载器,加载用户类路径上指定类库.</li>
+</ol>
+<h3 id="双亲委派模型的工作原理"><a href="#双亲委派模型的工作原理" class="headerlink" title="双亲委派模型的工作原理"></a>双亲委派模型的工作原理</h3><p>如果一个类加载器受到了类加载请求,它首先不会自己去尝试加载这个类,而把这个请求委派给父类加载器去完成,每一层次的类加载器都是如此,因此所有的加载请求最终都应该传送到顶层的启动类加载器中,只有当父类加载器反馈自己无法完成加载请求时,加载器才尝试自己加载.这种方式保证了Oject类在各个加载器加载环境中都是同一个类.</p>
+<h3 id="关于tomcat6的加载顺序："><a href="#关于tomcat6的加载顺序：" class="headerlink" title="关于tomcat6的加载顺序："></a>关于tomcat6的加载顺序：</h3><p>在Tomcat 6中默认情况下，不是完全按照先Tomcat的lib再Web应用的lib这种顺序去加载类。<br>Jar包的加载顺序是：</p>
+<ol>
+<li>JRE中的Java基础包</li>
+<li>Web应用WEB-INF\lib下的包</li>
+<li>Tomcat\lib下的包</li>
+</ol>
+<h2 id="分派：静态分派与动态分派。"><a href="#分派：静态分派与动态分派。" class="headerlink" title="分派：静态分派与动态分派。"></a>分派：静态分派与动态分派。</h2><p>多态性特征的一些最基本的体现.</p>
+<p>静态类型是编译器可知的,动态类型是在运行时可知.Human h =new Man(); Human是静态类型,Man时动态类型.</p>
+<ol>
+<li><strong>静态分派</strong> 所有依赖于静态类型定义方法执行版本的分配动作称作,最典型的应用是方法重载；</li>
+<li><strong>动态分派</strong>是根据动态类型来确定执行的版本,所以只有到运行时才能确定具体的执行方法版本.典型的代表时重写.</li>
+</ol>
+<p>动态分派过程如下:</p>
+<ol>
+<li>首先找到操作数栈栈顶的第一个元素所执向对象的实际类型,记做C.</li>
+<li>如果在类型C中找到和常量中的描述符和简单名称都相符的方法,则进行范围权限校验.如果通过则返回该方法的直接引用,否则抛出IllegalAccessError异常.</li>
+<li>否则按照继承关系<strong>从下往上</strong>依次对C的各个父类进行第2步的搜索和验证过程.</li>
+<li>如果始终没有找到就抛出AbstractMethodError异常.</li>
+</ol>
+<p>方法的接受者和方法的参数统称<em>*方法宗量</em>,根据分配基于多少中宗量可以分为单分派和多分派.java是静态多分派,动态分派属于单分派.</p>
+<p><strong>动态分派的实现:</strong></p>
+<p>动态分派时非常频繁的动作,而且动态分派的方法版本选择过程需要运行时在类的方法元数据中搜索合适的目标方法,因此出于性能的考虑,在方法区中建立一个虚方法表,用来保存各个方法的实际入口地址.如果某个方法的子类中没有被重新,那么子类的虚方法表里面的地址入口和父类相同方法的地址入口是一致的.都是指向父类的实现入口,如果子类中重写了这个方法,子类方法表中的地址将会被替换为指向子类实现版本的入口地址.虚方法表在类加载的连接阶段进行初始化.</p>
+<h2 id="Jvm-自动内存管理（什么时候触发-gc-）"><a href="#Jvm-自动内存管理（什么时候触发-gc-）" class="headerlink" title="Jvm 自动内存管理（什么时候触发 gc ）"></a>Jvm 自动内存管理（什么时候触发 gc ）</h2><p>FULL GC 和 Minor GC 的触发时间</p>
+<p>程序员不能具体控制时间，系统在不可预测的时间调用System.gc()函数的时候；当然可以通过调优，用NewRatio控制newObject和oldObject的比例，用MaxTenuringThreshold 控制进入oldObject的次数，使得oldObject 存储空间延迟达到full gc,从而使得计时器引发gc时间延迟OOM的时间延迟，以延长对象生存期。</p>
+<h2 id="GC停顿原因，如何降低停顿"><a href="#GC停顿原因，如何降低停顿" class="headerlink" title="GC停顿原因，如何降低停顿"></a>GC停顿原因，如何降低停顿</h2><h2 id="JVM如何调优、参数怎么调"><a href="#JVM如何调优、参数怎么调" class="headerlink" title="JVM如何调优、参数怎么调"></a>JVM如何调优、参数怎么调</h2><h2 id="如果想不被-GC-怎么办"><a href="#如果想不被-GC-怎么办" class="headerlink" title="如果想不被 GC 怎么办"></a>如果想不被 GC 怎么办</h2><p>可以先说那些对象可以被GC,然后说java对象会不会回收，决定于是否还被引用，不被引用了就有可能被GC回收，一直被引用着就不会被回收. </p>
+<ol>
+<li>jvm性能调优都做了什么</li>
+<li>介绍GC 和GC Root不正常引用。</li>
+<li>自己从classload 加载方式，加载机制说开去，从程序运行时数据区，讲到内存分配，讲到String常量池，讲到JVM垃圾回收机制，算法，hotspot。反正就是各种扩展</li>
+<li>数组多大放在 JVM老年代（不只是设置 PretenureSizeThreshold ，问通常多大，没做过一问便知）</li>
+<li>老年代中数组的访问方式</li>
+<li>GC 算法，永久代对象如何 GC ， GC 有环怎么处理</li>
+<li>jvm 如何分配直接内存??</li>
+<li>new 对象如何不分配在堆而是栈上?</li>
+<li>常量池解析</li>
+</ol>
+</div><div class="tags"><a href="/tags/JVM/">JVM</a><a href="/tags/GC/">GC</a></div><div class="post-nav"><a href="/2017/01/12/Analyze-memory-barriers-with-hsdis/" class="pre">使用hsdis分析Java内存屏障</a><a href="/2017/01/09/JDK-Dynamic-Proxy-Class/" class="next">分析JDK动态代理类</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://www.jacarrichan.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Exception/">Exception</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IO/">IO</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UML/">UML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/职称/">职称</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/jdb/" style="font-size: 15px;">jdb</a> <a href="/tags/volatile/" style="font-size: 15px;">volatile</a> <a href="/tags/hsdis/" style="font-size: 15px;">hsdis</a> <a href="/tags/JIT/" style="font-size: 15px;">JIT</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/Thread/" style="font-size: 15px;">Thread</a> <a href="/tags/Concurrent/" style="font-size: 15px;">Concurrent</a> <a href="/tags/OOME/" style="font-size: 15px;">OOME</a> <a href="/tags/OutOfMemoryError/" style="font-size: 15px;">OutOfMemoryError</a> <a href="/tags/poi/" style="font-size: 15px;">poi</a> <a href="/tags/Dubbo/" style="font-size: 15px;">Dubbo</a> <a href="/tags/hessian/" style="font-size: 15px;">hessian</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/动态代理/" style="font-size: 15px;">动态代理</a> <a href="/tags/InvocationHandler/" style="font-size: 15px;">InvocationHandler</a> <a href="/tags/GC/" style="font-size: 15px;">GC</a> <a href="/tags/tomcat/" style="font-size: 15px;">tomcat</a> <a href="/tags/Proxy/" style="font-size: 15px;">Proxy</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/AOP/" style="font-size: 15px;">AOP</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/CGlib/" style="font-size: 15px;">CGlib</a> <a href="/tags/UML/" style="font-size: 15px;">UML</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/springMVC/" style="font-size: 15px;">springMVC</a> <a href="/tags/dangdang-com/" style="font-size: 15px;">dangdang.com</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/centos/" style="font-size: 15px;">centos</a> <a href="/tags/spring-boot/" style="font-size: 15px;">spring boot</a> <a href="/tags/cors/" style="font-size: 15px;">cors</a> <a href="/tags/IE8/" style="font-size: 15px;">IE8</a> <a href="/tags/jquery/" style="font-size: 15px;">jquery</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/NIO/" style="font-size: 15px;">NIO</a> <a href="/tags/epoll/" style="font-size: 15px;">epoll</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/11/Debug-tomcat-with-jdb-for-pinpint/">在tomcat中使用jdb调试</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/18/spring-boot-with-cors/">跨域简介以及在spring boot和IE8中的实践</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/Download-large-amounts-of-data-to-cause-tomcat-to-appear-OOME/">下载大量数据导致tomcat出现OOME</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/18/Design-pattern-with-in-java/">设计模式及其在java中的体现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/Analyze-memory-barriers-with-hsdis/">使用hsdis分析Java内存屏障</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/JVM-vs-GC-Introduction/">JVM和垃圾回收的简单总结介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/JDK-Dynamic-Proxy-Class/">分析JDK动态代理类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/06/Spring-proxy-vs-Dynamic-proxy-Transaction/">简单讨论spring代理对事务的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/03/30/Interview-questions/">整理面试题目</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/03/07/Understanding-of-object-oriented-in-the-project/">'在项目中理解面向对象'</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">JacarriChan's coding blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

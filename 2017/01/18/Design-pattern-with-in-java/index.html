@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JacarriChan's coding blog"><title>设计模式及其在java中的体现 | JacarriChan's coding blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">设计模式及其在java中的体现</h1><a id="logo" href="/.">JacarriChan's coding blog</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">设计模式及其在java中的体现</h1><div class="post-meta">Jan 18, 2017</div><div class="post-content"><p>本文主要是设计模式的归纳和总结</p>
+<a id="more"></a>
+<h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p>GoF的设计模式一共23个，可以分为3大类：创建型、结构型和行为型</p>
+<h2 id="创建型"><a href="#创建型" class="headerlink" title="创建型"></a>创建型</h2><ul>
+<li><p>简单工厂（Simple Factory）、工厂方法（Factory Method）、抽象工厂（Abstract Factory）、单例（Singleton）、构造者（Builder）和原型（Prototype）</p>
+<p>工厂系列的3个设计模式，它们都主要是针对软件设计中的“开放-封闭”原则，即程序应该对扩展开放，对修改封闭。特别是当我们的程序采用XML+反射的方式来创建对象时，工厂模式的威力就完全展现出来了，这时我们可以通过维护配置文件的方式，来控制程序的逻辑。</p>
+</li>
+</ul>
+<h2 id="结构型"><a href="#结构型" class="headerlink" title="结构型"></a>结构型</h2><ul>
+<li>适配器（Adapter）、装饰（Decorator）、桥接器（Bridge）、享元（FlyWeight）、门面（Facade）、合成（Composite）以及代理（Proxy）模式。</li>
+</ul>
+<h2 id="行为型"><a href="#行为型" class="headerlink" title="行为型"></a>行为型</h2><ul>
+<li>职责链（Chain of Responsibility）、命令（Command）、解释器（Interperter）、迭代（Iterator）、中介者（Mediator）、备忘录（Memento）、观察者（Observer）、状态（State）、策略（Strategy）、模板（Template）和访问者（Visitor）。</li>
+</ul>
+<h1 id="6种原则："><a href="#6种原则：" class="headerlink" title="6种原则："></a>6种原则：</h1><p>　　<strong>S：单一职责原则</strong>（Single Responsibility Principle, SRP），一个类只能有一个原因使其发生改变，即一个类只承担一个职责。</p>
+<p>　　<strong>O：开放-封闭原则</strong>（Open-Close Principle, OCP），这里指我们的设计应该<strong>针对扩展开放，针对修改关闭</strong>，即尽量以扩展的方式来维护系统。</p>
+<p>　　<strong>L：里氏替换原则</strong>（Liskov Subsititution Principle, LSP），它表示我们可以在代码中使用任意子类来替代父类并且程序不受影响，这样可以保证我们使用“继承”并没有破坏父类。</p>
+<p>　　<strong>I：接口隔离原则</strong>（Interface Segregation Principle, ISP），客户端不应该依赖于它不需要的接口，<strong>两个类之间的依赖应该建立在最小接口的基础上</strong>。这条原则的目的是为了让那些使用相同接口的类只需要实现特定必要的一组方法，而不是大量没用的方法。</p>
+<p>　　<strong>D：依赖倒置原则</strong>（Dependence Inversion Principle, DIP），高层模块不应该依赖于低层模块，两者应该都依赖于抽象；<strong>抽象不依赖于细节，而细节应该依赖于抽象</strong>。这里主要是提倡“面向接口”编程，而非“面向实现”编程。</p>
+<p>　　<strong>L：迪米特法则</strong>(Law of Demete),也叫最少知识原则，一个对象应该对其他对象有最少的了解，或者“只和朋友交流” ，用设计行话就是“<strong>高内聚，低耦合</strong>”，减少类之间的相互依赖，修改系统的某一部分的时候，不会影响到其他部分，使系统有更好的维护性. </p>
+<h1 id="简单总结："><a href="#简单总结：" class="headerlink" title="简单总结："></a>简单总结：</h1><h3 id="工厂方法（Factory）"><a href="#工厂方法（Factory）" class="headerlink" title="工厂方法（Factory）"></a>工厂方法（Factory）</h3><ul>
+<li>意图：定义一个用户创建对象的接口，让子类去决定具体使用哪个类。</li>
+<li>适用场合：1）类不知道它所要创建的对象的类信息；2）类希望由它的子类来创建对象。</li>
+<li>JDK中的体现：Collection.iterator方法</li>
+</ul>
+<h3 id="抽象工厂（Abstract-factory）"><a href="#抽象工厂（Abstract-factory）" class="headerlink" title="抽象工厂（Abstract factory）"></a>抽象工厂（Abstract factory）</h3><ul>
+<li>意图：提供一个创建一系列相关或者相互依赖的对象的接口，而无须指定它的具体实现类。</li>
+<li>适用场合：1）系统不依赖于产品是如何实现的细节；2）系统的产品族大于1，而在运行时刻只需要某一种产品族；3）属于同一个产品族的产品，必须绑在一起使用；4）所有的产品族，可以抽取公共接口</li>
+<li>JDK中的体现：java.sql包</li>
+</ul>
+<h3 id="单例（Singleton）"><a href="#单例（Singleton）" class="headerlink" title="单例（Singleton）"></a>单例（Singleton）</h3><ul>
+<li>意图：保证一个类只有一个实例，并且在系统全局范围内提供访问切入点。</li>
+<li>适用场合：各种“工厂类”</li>
+<li>JDK中的体现：Runtime类,Emun类</li>
+</ul>
+<h3 id="构造者（Builder）"><a href="#构造者（Builder）" class="headerlink" title="构造者（Builder）"></a>构造者（Builder）</h3><ul>
+<li>意图：<strong>简化复杂对象的创建</strong>，将复杂对象的构造与表示相分离，使得同样的构造过程可以产生不同的复杂对象。</li>
+<li>适用场合：1）需要创建的对象有复杂的内部结构；2）对象的属性之间相互依赖，创建时前后顺序需要指定。</li>
+<li>JDK中的体现：java.sql.PreparedStatement</li>
+</ul>
+<h3 id="原型（Prototype）"><a href="#原型（Prototype）" class="headerlink" title="原型（Prototype）"></a>原型（Prototype）</h3><ul>
+<li>意图：用原型实例指定创建对象的种类，并通过复制原型实例得到对象。使用自己的实例创建另一个实例。有时候，创建一个实例然后再把已有实例的值拷贝过去，是一个很复杂的动作。所以，使用这个模式可以避免这样的复杂性。</li>
+<li>适用场合：1）系统不关心对象创建的细节；2）要实例化的对象的类型是动态加载的；3）类在运行过程中的状态是有限的。</li>
+<li>JDK中的体现：java.lang.Object#clone()，java.lang.Cloneable</li>
+</ul>
+<h3 id="适配器（Adapter）"><a href="#适配器（Adapter）" class="headerlink" title="适配器（Adapter）"></a>适配器（Adapter）</h3><ul>
+<li>意图：将一个类的接口转换成用户希望的另一个接口。</li>
+<li>适用场合：系统需要使用现有类的功能，但接口不匹配</li>
+<li>JDK中的体现：java.io.OutputStreamWriter(OutputStream),java.util.Arrays#asList()</li>
+</ul>
+<h3 id="装饰（Decorator）"><a href="#装饰（Decorator）" class="headerlink" title="装饰（Decorator）"></a>装饰（Decorator）</h3><ul>
+<li>意图：动态的为对象添加额外职责</li>
+<li>适用场合：1）需要添加对象职责；2）这些职责可以动态添加或者取消；3）添加的职责很多，从而不能用继承实现。</li>
+<li>JDK中的体现：java.io.BufferedInputStream(InputStream)</li>
+</ul>
+<h3 id="桥接器（Bridge）"><a href="#桥接器（Bridge）" class="headerlink" title="桥接器（Bridge）"></a>桥接器（Bridge）</h3><ul>
+<li>意图：将抽象部分与实现部分分离，从而使得它们可以独立变化</li>
+<li>适用场合：1）系统需要在组件的抽象化角色与具体化角色之间增加更多的灵活；2）角色的任何变化都不应该影响客户端；3）组件有多个抽象化角色和具体化角色</li>
+<li>JDK中的体现：AWT ,JDBC</li>
+</ul>
+<h3 id="享元（Flyweight）"><a href="#享元（Flyweight）" class="headerlink" title="享元（Flyweight）"></a>享元（Flyweight）</h3><ul>
+<li>意图：运用共享技术支持大量细粒度的对象</li>
+<li>适用场合：1）系统中有大量对象；2）这些对象占据大量内存；3）对象中的状态可以很好的区分为外部和内部；4）可以按照内部状态将对象分为不同的组；5）对系统来讲，同一个组内的对象是不可分辨的</li>
+<li>JDK中的体现：java.lang.Integer#valueOf(int)，java.lang.Byte#valueOf(byte)</li>
+</ul>
+<h3 id="门面（Facade）"><a href="#门面（Facade）" class="headerlink" title="门面（Facade）"></a>门面（Facade）</h3><ul>
+<li>意图：为系统的一组接口提供一个一致的界面</li>
+<li>适用场合：1）为一个复杂的接口提供一个简单界面；2）保持不同子系统的独立性；3）在分层设计中，定义每一层的入口</li>
+<li>JDK中的体现：java.lang.Class</li>
+</ul>
+<h3 id="合成（Composite）"><a href="#合成（Composite）" class="headerlink" title="合成（Composite）"></a>合成（Composite）</h3><ul>
+<li>意图：将对象组装成树状结构以表示“部分-整体”的关系</li>
+<li>适用场合：1）系统中的对象之间是“部分-整体”的关系；2）用户不关心“部分”与“整体”之间的区别</li>
+<li>JDK中的体现：java.util.Map#putAll(Map),java.util.List#addAll(Collection)</li>
+</ul>
+<h3 id="代理（Proxy）"><a href="#代理（Proxy）" class="headerlink" title="代理（Proxy）"></a>代理（Proxy）</h3><ul>
+<li>意图：为其他对象提供一种代理以控制对该对象的访问</li>
+<li>适用场合：对象无法直接访问（远程代理）</li>
+<li>JDK中的体现：java.lang.reflect.Proxy,RMI</li>
+</ul>
+<h3 id="职责链（Chain-of-responsibility）"><a href="#职责链（Chain-of-responsibility）" class="headerlink" title="职责链（Chain of responsibility）"></a>职责链（Chain of responsibility）</h3><ul>
+<li>意图：对目标对象实施一系列的操作，并且不希望调用双方和操作之间有耦合关系</li>
+<li>适用场合：1）输入对象需要经过一系列处理；2）这些处理需要在运行时指定；3）需要向多个操作发送处理请求；4）这些处理的顺序是可变的</li>
+<li>JDK中的体现：java.util.logging.Logger#log(),javax.servlet.Filter#doFilter()</li>
+</ul>
+<h3 id="命令-Command"><a href="#命令-Command" class="headerlink" title="命令(Command)"></a>命令(Command)</h3><ul>
+<li>意图：对一类对象公共操作的抽象</li>
+<li>适用场合：1）调用者同时和多个执行对象交互；2）需要控制调用本身的生命周期；3）调用可以取消</li>
+<li>JDK中的体现：java.lang.Runnable</li>
+</ul>
+<h3 id="观察者（Observer）"><a href="#观察者（Observer）" class="headerlink" title="观察者（Observer）"></a>观察者（Observer）</h3><ul>
+<li>意图：定义对象之间一种“一对多”的关系，当一个对象发生改变时，所有和它有依赖关系的对象都会得到通知</li>
+<li>适用场合：1）抽象模型有两部分，其中一部分依赖于另一部分；2）一个对象的改变会导致其他很多对象发生改变；3）对象之间是松耦合</li>
+<li>JDK中的体现：java.util.EventListener,javax.servlet.http.HttpSessionBindingListener</li>
+</ul>
+<h3 id="访问者（Visitor）"><a href="#访问者（Visitor）" class="headerlink" title="访问者（Visitor）"></a>访问者（Visitor）</h3><ul>
+<li>意图：对一组不同类型的元素进行处理</li>
+<li>适用场合：1）一个类型需要依赖于多个不同接口的类型；2）需要经常为一个结构相对稳定的对象添加新操作；3）需要用一个独立的类型来组织一批不相干的操作，使用它的类型可以根据应用需要进行定制</li>
+<li>JDK中的体现：javax.lang.model.element.Element 和javax.lang.model.element.ElementVisitor</li>
+</ul>
+<p><strong><em> 责任链、观察者 访问者的区别和联系</em></strong></p>
+<p>可以简单理解，责任链和访问者都是观察者的变种。观察者通过事件机制通知到各个节点，如果节点只有一个处理者即为责任链模式，如果都处理，则是观察者模式，如果有条件处理，则是访问者模式。</p>
+<h3 id="模板（Template）"><a href="#模板（Template）" class="headerlink" title="模板（Template）"></a>模板（Template）</h3><ul>
+<li>意图：定义一个操作步骤的方法骨架，而将其中一些细节的实现放到子类中</li>
+<li>适用场合：1）可以抽取方法骨架；2）控制子类的行为，只需要实现特定细节</li>
+<li>JDK中的体现：java.util.Collections#sort(),java.io.InputStream#skip(),java.io.InputStream#read()</li>
+</ul>
+<h3 id="策略（Strategy）"><a href="#策略（Strategy）" class="headerlink" title="策略（Strategy）"></a>策略（Strategy）</h3><ul>
+<li>意图：对算法族进行封装<br>适用场合：1）完成某项业务有多个算法；2）算法可提取公共接口</li>
+<li>JDK中的体现：ThreadPoolExecutor中的四种拒绝策略</li>
+</ul>
+<h3 id="解释器（Interpreter）"><a href="#解释器（Interpreter）" class="headerlink" title="解释器（Interpreter）"></a>解释器（Interpreter）</h3><ul>
+<li>意图：应用或对象与用户狡猾时，采取最具实效性的方式完成</li>
+<li>适用场合：1）针对对象的操作有规律可循；2）在执行过程中，对效率要求不高，但对灵活性要求很高</li>
+<li>JDK中的体现：java.util.regex.Pattern</li>
+</ul>
+<h3 id="迭代（Iterator）"><a href="#迭代（Iterator）" class="headerlink" title="迭代（Iterator）"></a>迭代（Iterator）</h3><ul>
+<li>意图：提供一种方法， 来顺序访问集合中的所有元素</li>
+<li>适用场合：1）访问一个聚合对象的内容，而不必暴露其内部实现；2）支持对聚合对象的多种遍历方式；3）为遍历不同的聚合对象提供一致的接口</li>
+<li>JDK中的体现：terator、Enumeration接口</li>
+</ul>
+<h3 id="中介者（Mediator）"><a href="#中介者（Mediator）" class="headerlink" title="中介者（Mediator）"></a>中介者（Mediator）</h3><ul>
+<li>意图：避免大量对象之间的紧耦合</li>
+<li>适用场合：1）有大量对象彼此依赖（M：N）；2）某个类型要依赖于很多其他类型</li>
+<li>JDK中的体现：java.util.concurrent.Executor#execute(),java.util.concurrent.ExecutorService#submit(),java.lang.reflect.Method#invoke()</li>
+</ul>
+<h3 id="备忘录（Memento）"><a href="#备忘录（Memento）" class="headerlink" title="备忘录（Memento）"></a>备忘录（Memento）</h3><ul>
+<li>意图：希望备份或者恢复复杂对象的部分属性</li>
+<li>适用场合：1）对象的属性比较多，但需要备份恢复的属性比较少；2）对象的状态是支持恢复的</li>
+<li>JDK中的体现：java.util.Date,java.io.Serializable,Null Object:</li>
+</ul>
+<h3 id="状态（State）"><a href="#状态（State）" class="headerlink" title="状态（State）"></a>状态（State）</h3><ul>
+<li>意图：管理对象的多个状态</li>
+<li>适用场合：1）对象的行为依赖于当前状态；2）业务处理过程存在多个分支，而且分支会越来越多</li>
+<li>JDK中的体现：java.util.Iterator</li>
+</ul>
+<hr>
+<p>抽个时间把<a href="https://en.wikipedia.org/wiki/Software_design_pattern#Concurrency_patterns" title="Concurrency_patterns" target="_blank" rel="external">并发设计模式</a>学学</p>
+</div><div class="tags"><a href="/tags/设计模式/">设计模式</a><a href="/tags/jdk/">jdk</a></div><div class="post-nav"><a href="/2017/03/24/Download-large-amounts-of-data-to-cause-tomcat-to-appear-OOME/" class="pre">下载大量数据导致tomcat出现OOME</a><a href="/2017/01/12/Analyze-memory-barriers-with-hsdis/" class="next">使用hsdis分析Java内存屏障</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://www.jacarrichan.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Exception/">Exception</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/IO/">IO</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/UML/">UML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/职称/">职称</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/jdb/" style="font-size: 15px;">jdb</a> <a href="/tags/volatile/" style="font-size: 15px;">volatile</a> <a href="/tags/hsdis/" style="font-size: 15px;">hsdis</a> <a href="/tags/JIT/" style="font-size: 15px;">JIT</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/jdk/" style="font-size: 15px;">jdk</a> <a href="/tags/Thread/" style="font-size: 15px;">Thread</a> <a href="/tags/Concurrent/" style="font-size: 15px;">Concurrent</a> <a href="/tags/OOME/" style="font-size: 15px;">OOME</a> <a href="/tags/OutOfMemoryError/" style="font-size: 15px;">OutOfMemoryError</a> <a href="/tags/poi/" style="font-size: 15px;">poi</a> <a href="/tags/Dubbo/" style="font-size: 15px;">Dubbo</a> <a href="/tags/hessian/" style="font-size: 15px;">hessian</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/动态代理/" style="font-size: 15px;">动态代理</a> <a href="/tags/InvocationHandler/" style="font-size: 15px;">InvocationHandler</a> <a href="/tags/GC/" style="font-size: 15px;">GC</a> <a href="/tags/tomcat/" style="font-size: 15px;">tomcat</a> <a href="/tags/Proxy/" style="font-size: 15px;">Proxy</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/AOP/" style="font-size: 15px;">AOP</a> <a href="/tags/事务/" style="font-size: 15px;">事务</a> <a href="/tags/CGlib/" style="font-size: 15px;">CGlib</a> <a href="/tags/UML/" style="font-size: 15px;">UML</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/springMVC/" style="font-size: 15px;">springMVC</a> <a href="/tags/dangdang-com/" style="font-size: 15px;">dangdang.com</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/centos/" style="font-size: 15px;">centos</a> <a href="/tags/spring-boot/" style="font-size: 15px;">spring boot</a> <a href="/tags/cors/" style="font-size: 15px;">cors</a> <a href="/tags/IE8/" style="font-size: 15px;">IE8</a> <a href="/tags/jquery/" style="font-size: 15px;">jquery</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/NIO/" style="font-size: 15px;">NIO</a> <a href="/tags/epoll/" style="font-size: 15px;">epoll</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/11/Debug-tomcat-with-jdb-for-pinpint/">在tomcat中使用jdb调试</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/18/spring-boot-with-cors/">跨域简介以及在spring boot和IE8中的实践</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/24/Download-large-amounts-of-data-to-cause-tomcat-to-appear-OOME/">下载大量数据导致tomcat出现OOME</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/18/Design-pattern-with-in-java/">设计模式及其在java中的体现</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/Analyze-memory-barriers-with-hsdis/">使用hsdis分析Java内存屏障</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/JVM-vs-GC-Introduction/">JVM和垃圾回收的简单总结介绍</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/JDK-Dynamic-Proxy-Class/">分析JDK动态代理类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/06/Spring-proxy-vs-Dynamic-proxy-Transaction/">简单讨论spring代理对事务的影响</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/03/30/Interview-questions/">整理面试题目</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/03/07/Understanding-of-object-oriented-in-the-project/">'在项目中理解面向对象'</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">JacarriChan's coding blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
