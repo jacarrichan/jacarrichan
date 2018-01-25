@@ -110,4 +110,4 @@ Successfully built 85e064f7d7d1
 
 ### 第二次重启容器，pinpoint-web上可以看到demo应用，但是看不到访问记录；
 
-请查看hbase启动的日志，看有没有出现这样的异常[java.io.IOException: Directory /home/pinpoint/hbase/WALs/0afcbb063a9b,44027,1516902955987-splitting is not empty]。如果有的话，可以删除docker volumes目录对应的文件，命令为[rm -rf  /var/lib/docker/volumes/dockerpinpoint_hbase_data/_data/WALs/]
+请查看hbase启动的日志，看有没有出现这样的异常[java.io.IOException: Directory /home/pinpoint/hbase/WALs/0afcbb063a9b,44027,1516902955987-splitting is not empty]。如果有的话，可以删除docker volumes目录对应的文件，命令为[rm -rf  /var/lib/docker/volumes/dockerpinpoint_hbase_data/_data/WALs/]，然后把容器容器[docker-compose down & docker-compose up -d]
